@@ -1,10 +1,7 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Advent of Code[About][Events][Shop][Settings][Log Out](anonymous user #1065625) var
@@ -42,21 +39,29 @@ import java.util.stream.Stream;
  * <p>
  * You can also [Share] this puzzle.
  */
-public class Day01 {
-  private static final String INPUT = "src/main/resources/01.txt";
+public class Day01 implements Day {
 
-  public static void main(String args[]) {
-    Path path = Paths.get(INPUT);
-    try (Stream<String> stream = Files.lines(path)) {
-      Set<Integer> ints = stream.map(Integer::parseInt)
-          .collect(Collectors.toSet());
-      int part1Answer = solve1(ints);
-      int part2Answer = solve2(ints);
-      System.out.println("Part 1: " + part1Answer);
-      System.out.println("Part 2: " + part2Answer);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  @Override
+  public String getInputPath() {
+    return "src/main/resources/01.txt";
+  }
+
+  @Override
+  public String part1(List<String> lines) {
+    int result = solve1(buildIntSet(lines));
+    return String.valueOf(result);
+  }
+
+  @Override
+  public String part2(List<String> lines) {
+    int result = solve2(buildIntSet(lines));
+    return String.valueOf(result);
+  }
+
+  private Set<Integer> buildIntSet(List<String> lines) {
+    return lines.stream()
+        .map(Integer::valueOf)
+        .collect(Collectors.toSet());
   }
 
   // part 1 (naive – O(N^2) )

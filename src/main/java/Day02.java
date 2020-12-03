@@ -1,36 +1,34 @@
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-public class Day02 {
+public class Day02 implements Day {
 
-  private static final String INPUT = "src/main/resources/02.txt";
+  @Override
+  public String getInputPath() {
+    return "src/main/resources/02.txt";
+  }
 
-  public static void main(String[] args) {
-    Path path = Paths.get(INPUT);
-    try (Stream<String> stream = Files.lines(path)) {
-      List<Entry> entries = stream.map(Entry::fromInput)
-          .collect(Collectors.toList());
-      long numValidPt1 = entries.stream()
-          .filter(Entry::isValidPart1)
-          .count();
-      long numValidPt2 = entries.stream()
-          .filter(Entry::isValidPart2)
-          .count();
-      System.out.println("valid passwords pt1: " + numValidPt1);
-      System.out.println("valid passwords pt2: " + numValidPt2);
-    } catch (IOException e) {
-      e.printStackTrace();
-    }
+  @Override
+  public String part1(List<String> lines) {
+    long count = lines.stream()
+        .map(Entry::fromInput)
+        .filter(Entry::isValidPart1)
+        .count();
+    return String.valueOf(count);
+  }
+
+  @Override
+  public String part2(List<String> lines) {
+    long count = lines.stream()
+        .map(Entry::fromInput)
+        .filter(Entry::isValidPart2)
+        .count();
+    return String.valueOf(count);
   }
 
   static class Entry {
+
     private static Pattern inputRegex = Pattern.compile("(?<n1>\\d+)-(?<n2>\\d+)\\s+(?<char>.):\\s+(?<password>.+)");
 
     private String password;
@@ -68,5 +66,4 @@ public class Day02 {
       return charAtN1 == requiredChar ^ charAtN2 == requiredChar;
     }
   }
-
 }

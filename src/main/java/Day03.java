@@ -1,11 +1,12 @@
 import java.util.List;
 
 public class Day03 implements Day {
+
   private static final char TREE_CHAR = '#';
 
   @Override
   public String getInputPath() {
-   return "src/main/resources/03.txt";
+    return "src/main/resources/03.txt";
   }
 
   @Override
@@ -15,12 +16,11 @@ public class Day03 implements Day {
 
   @Override
   public String part2(List<String> lines) {
-    long result =
-        countTrees(lines, 1, 1) *
-        countTrees(lines, 3, 1) *
-        countTrees(lines, 5, 1) *
-        countTrees(lines, 7, 1) *
-        countTrees(lines, 1, 2);
+    long result = (long) countTrees(lines, 1, 1) *
+            countTrees(lines, 3, 1) *
+            countTrees(lines, 5, 1) *
+            countTrees(lines, 7, 1) *
+            countTrees(lines, 1, 2);
     return String.valueOf(result);
   }
 

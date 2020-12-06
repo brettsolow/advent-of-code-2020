@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public class Runner {
 
   public static void main(String[] args) {
-    Day currentDay = new Day04();
+    Day currentDay = new Day05();
     runDay(currentDay);
   }
 

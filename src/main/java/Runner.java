@@ -9,7 +9,7 @@ import java.util.stream.Stream;
 public class Runner {
 
   public static void main(String[] args) {
-    Day currentDay = new Day10();
+    Day currentDay = new Day16();
     runDay(currentDay);
   }
 
@@ -18,9 +18,9 @@ public class Runner {
     try (Stream<String> stream = Files.lines(path)) {
       List<String> lines = stream.collect(Collectors.toList());
       String answer1 = day.part1(lines);
-      String answer2 = day.part2(lines);
-
       System.out.println("Part 1: " + answer1);
+
+      String answer2 = day.part2(lines);
       System.out.println("Part 2: " + answer2);
     } catch (IOException e) {
       e.printStackTrace();

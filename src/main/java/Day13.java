@@ -59,7 +59,6 @@ public class Day13 implements Day {
   }
 
   static class Bus {
-
     int id;
     int index;
 

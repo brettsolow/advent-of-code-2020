@@ -45,13 +45,7 @@ public class Day19 implements Day {
 
     private boolean matches(String s, Map<Integer, Rule> ruleMap) {
         Pattern compiledPattern = Pattern.compile(getPattern(ruleMap));
-      boolean matches = compiledPattern.matcher(s).matches();
-      if (matches) {
-        System.out.println(s + " matches!");
-      } else {
-        System.out.println(s + " doesn't match");
-      }
-      return matches;
+      return compiledPattern.matcher(s).matches();
     }
 
     private String getPattern(Map<Integer, Rule> ruleMap) {
@@ -133,7 +127,6 @@ public class Day19 implements Day {
       Matcher m31 = p31.matcher(matcher.group("thirtyOnes"));
       return countMatches(m31) < countMatches(m42);
     }
-
     return false;
   }
 

@@ -32,7 +32,6 @@ public class Day13 implements Day {
 
   @Override
   public String part2(List<String> lines) {
-    // TODO: something that will complete in my lifetime
     String[] input = lines.get(1).split(",");
     List<Bus> buses = IntStream.range(0, input.length)
         .filter(i -> !input[i].equals("x"))
@@ -40,22 +39,19 @@ public class Day13 implements Day {
         .sorted(Comparator.comparing(Bus::getId, Comparator.reverseOrder()))
         .collect(Collectors.toList());
 
-    Bus slowestBus = buses.get(0);
-    int incBy = slowestBus.getId();
-    long t = (long) incBy - (buses.get(0).index);
-    while (!checkT(t, buses)) {
-      t += incBy;
+    long t = 0;
+    long incBy = 1;
+    for (Bus bus : buses) {
+      while (!checkT(t, bus)) {
+        t += incBy;
+      }
+      incBy *= bus.id;
     }
     return "" + t;
   }
 
-  private boolean checkT(long t, List<Bus> buses) {
-    for (Bus b : buses) {
-      if (((b.index + t) % b.id) != 0) {
-        return false;
-      }
-    }
-    return true;
+  private boolean checkT(long t, Bus b) {
+    return (b.index + t) % b.id == 0;
   }
 
   static class Bus {

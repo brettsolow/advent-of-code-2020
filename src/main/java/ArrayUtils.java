@@ -1,3 +1,5 @@
+import java.util.Arrays;
+
 public class ArrayUtils {
 
   public static Character[][] rotateClockwise(Character[][] grid) {
@@ -32,4 +34,20 @@ public class ArrayUtils {
     return result;
   }
 
+  static String toString(Character[][] grid) {
+    StringBuilder result = new StringBuilder();
+    for (Character[] row : grid) {
+      for(char c : row) {
+        result.append(c);
+      }
+      result.append("\n");
+    }
+    return result.toString();
+  }
+
+  static Character[][] copy(Character[][] grid) {
+    return Arrays.stream(grid)
+        .map(a -> a.clone())
+        .toArray(Character[][]::new);
+  }
 }

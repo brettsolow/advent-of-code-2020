@@ -1,9 +1,11 @@
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -16,7 +18,7 @@ public class Day20 implements Day {
   static String MONSTER_STRING =
             "                  # \n"
           + "#    ##    ##    ###\n"
-          + " #  #  #  #  #  #  ";
+          + " #  #  #  #  #  #   ";
   static {
     MONSTER = gridFromLines(Arrays.asList(MONSTER_STRING.split("\n")));
   }
@@ -87,9 +89,71 @@ public class Day20 implements Day {
     List<Tile> tiles = parseInput(lines);
     Image image = buildImage(tiles);
     System.out.println(image);
-    // assume images are always square
-    return null;
+    Character[][] borderless = image.removeBorders();
+    Set<Coordinate> monsterPoints = getPoints(MONSTER);
+    Set<Coordinate> matchingMonsterPoints = new HashSet<>();
+    Character[][] mapToCheck = borderless;
+    for (int i = 0; i < 4; i++) {
+      if (findMonsters(mapToCheck, matchingMonsterPoints)) {
+        break;
+      }
+      mapToCheck = ArrayUtils.flipHorizontal(mapToCheck);
+      if (findMonsters(mapToCheck, matchingMonsterPoints)) {
+        break;
+      }
+      mapToCheck = ArrayUtils.rotateClockwise(mapToCheck);
+    }
+    Set<Coordinate> imagePoints = getPoints(mapToCheck);
+//    int result = imagePoints.size() - matchingMonsterPoints.size();
+    // why doesn't this work??
+    imagePoints.removeAll(matchingMonsterPoints);
+    int result = imagePoints.size();
+    return "" + result;
   }
+
+  private boolean findMonsters(Character[][] grid, Set<Coordinate> matchingMonsterPoints) {
+    Set<Coordinate> monsterPoints = getPoints(MONSTER);
+    Set<Coordinate> imagePoints = getPoints(grid);
+    int matchedMonsters = 0;
+    for (int i = 0; i < grid.length - MONSTER.length; i++) {
+      for (int j = 0; j < grid[0].length - MONSTER[0].length; j++) {
+        int finalJ = j;
+        int finalI = i;
+        Set<Coordinate> currMonster = monsterPoints.stream()
+            .map(c -> new Coordinate(c.x + finalJ, c.y + finalI))
+            .collect(Collectors.toSet());
+        if (imagePoints.containsAll(currMonster)) {
+          matchingMonsterPoints.addAll(currMonster);
+          System.out.println("found match at row:" + i+" col:"+j);
+          matchedMonsters++;
+        }
+      }
+    }
+    System.out.println("matched monsters: " + matchedMonsters);
+    printGridWithMatches(grid, matchingMonsterPoints);
+    return matchedMonsters > 0;
+  }
+
+  private void printGridWithMatches(Character[][] grid, Set<Coordinate> matches) {
+    Character[][] clone = ArrayUtils.copy(grid);
+    matches.forEach(c -> {
+      clone[c.y][c.x] = '0';
+    });
+    System.out.println(ArrayUtils.toString(clone));
+  }
+
+  private Set<Coordinate> getPoints(Character[][] grid) {
+    Set<Coordinate> result = new HashSet<>();
+    for (int y = 0 ; y < grid.length; y++) {
+      for (int x = 0; x < grid[0].length; x++) {
+        if (grid[y][x] == '#') {
+          result.add(new Coordinate(x,y));
+        }
+      }
+    }
+    return result;
+  }
+
 
   private Image buildImage(List<Tile> tiles) {
     int imageSize = (int) Math.sqrt(tiles.size());
@@ -185,7 +249,7 @@ public class Day20 implements Day {
         for (Tile tile: tileRow) {
           Character[][] t = tile.removeBorders();
           for (int i = 0; i < t.length; i++) {
-            System.arraycopy(t[i], 0, result[row * newTileSize + i], col * newTileSize + 0, t.length);
+            System.arraycopy(t[i], 0, result[row * newTileSize + i], col * newTileSize, t.length);
           }
           col++;
         }
@@ -221,14 +285,12 @@ public class Day20 implements Day {
         .collect(Collectors.toList());
   }
 
-
   enum Side {
     TOP,
     RIGHT,
     BOTTOM,
     LEFT
   }
-
 
   private String reverse(String s) {
     return new StringBuilder(s).reverse().toString();
@@ -268,8 +330,9 @@ public class Day20 implements Day {
           throw new IllegalArgumentException();
 
       }
-      return null;
-//      return (String) Arrays.stream(result).collect(Collectors.joining());
+      return Arrays.stream(result)
+          .map(String::valueOf)
+          .collect(Collectors.joining());
     }
 
     void rotateClockwise() {
@@ -293,12 +356,7 @@ public class Day20 implements Day {
 
     @Override
     public String toString() {
-      StringBuilder result = new StringBuilder();
-      for (Character[] row : data) {
-        result.append(Arrays.toString(row));
-        result.append("\n");
-      }
-      return result.toString();
+      return ArrayUtils.toString(data);
     }
   }
 
